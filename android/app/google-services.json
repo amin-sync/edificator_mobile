@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1071905866074",
+    "project_id": "edificator-e71f3",
+    "storage_bucket": "edificator-e71f3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071905866074:android:c597894ad8127e7d35b363",
+        "android_client_info": {
+          "package_name": "com.example.edificators_hub_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbB-6Xdd2ojUNQGODPvGmDcDjfrn7uf0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
