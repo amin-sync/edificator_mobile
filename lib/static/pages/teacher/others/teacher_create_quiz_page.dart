@@ -13,6 +13,7 @@ import '../../../widgets/texts/custom_text.dart';
 
 class TeacherCreateQuizPage extends StatefulWidget {
   final int courseId;
+
   const TeacherCreateQuizPage({
     required this.courseId,
     Key? key,
@@ -38,8 +39,12 @@ class _TeacherCreateQuizPageState extends State<TeacherCreateQuizPage> {
           "optionA": TextEditingController(),
           "optionB": TextEditingController(),
           "optionC": TextEditingController(),
+          // Optional for True/False
           "optionD": TextEditingController(),
+          // Optional for True/False
           "answer": TextEditingController(),
+          "isTrueFalse": TextEditingController(),
+          // Indicates if the question is True/False
         };
       });
       numberOfQuestions = count;
@@ -71,8 +76,9 @@ class _TeacherCreateQuizPageState extends State<TeacherCreateQuizPage> {
       if (question["question"]!.text.isEmpty ||
           question["optionA"]!.text.isEmpty ||
           question["optionB"]!.text.isEmpty ||
-          question["optionC"]!.text.isEmpty ||
-          question["optionD"]!.text.isEmpty ||
+          (question["isTrueFalse"]!.text != "true" &&
+              (question["optionC"]!.text.isEmpty ||
+                  question["optionD"]!.text.isEmpty)) ||
           question["answer"]!.text.isEmpty) {
         CustomToast.showDangerToast(
             "Please fill out all fields for question ${i + 1}.");
@@ -80,38 +86,48 @@ class _TeacherCreateQuizPageState extends State<TeacherCreateQuizPage> {
       }
     }
 
+    // Prepare Quiz Request
     CreateQuizRequest request = CreateQuizRequest(
       title: titleController.text,
       duration: selectedDuration!,
       noOfQuestions: numberOfQuestions,
       courseId: widget.courseId,
       questions: questionControllers.map((controller) {
+        bool isTrueFalse = controller["isTrueFalse"]!.text == "true";
         return Question(
           text: controller["question"]!.text,
-          answers: [
-            Answer(
-                answer: controller["optionA"]!.text,
-                correct: controller["answer"]!.text == "A"),
-            Answer(
-                answer: controller["optionB"]!.text,
-                correct: controller["answer"]!.text == "B"),
-            Answer(
-                answer: controller["optionC"]!.text,
-                correct: controller["answer"]!.text == "C"),
-            Answer(
-                answer: controller["optionD"]!.text,
-                correct: controller["answer"]!.text == "D"),
-          ],
+          answers: isTrueFalse
+              ? [
+                  Answer(
+                      answer: controller["optionA"]!.text,
+                      correct: controller["answer"]!.text == "A"),
+                  Answer(
+                      answer: controller["optionB"]!.text,
+                      correct: controller["answer"]!.text == "B"),
+                ]
+              : [
+                  Answer(
+                      answer: controller["optionA"]!.text,
+                      correct: controller["answer"]!.text == "A"),
+                  Answer(
+                      answer: controller["optionB"]!.text,
+                      correct: controller["answer"]!.text == "B"),
+                  Answer(
+                      answer: controller["optionC"]!.text,
+                      correct: controller["answer"]!.text == "C"),
+                  Answer(
+                      answer: controller["optionD"]!.text,
+                      correct: controller["answer"]!.text == "D"),
+                ],
         );
       }).toList(),
     );
 
-    // GET QUIZ
+    // API Call
     final quizProvider = Provider.of<QuizProvider>(context, listen: false);
     await quizProvider.createQuiz(request);
     if (quizProvider.getCreateQuizState.success) {
       quizProvider.listQuizByTeacher(widget.courseId);
-      // ignore: use_build_context_synchronously
       Navigator.pop(context);
       CustomToast.showToast("Quiz created successfully");
     } else {
@@ -122,10 +138,6 @@ class _TeacherCreateQuizPageState extends State<TeacherCreateQuizPage> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
-
-    // Number of questions from 5 to 50
-    List<String> noOfQuestions =
-        List.generate(46, (index) => (index + 1).toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -169,7 +181,7 @@ class _TeacherCreateQuizPageState extends State<TeacherCreateQuizPage> {
               SizedBox(height: height * 0.02),
               CustomDropdown(
                 value: selectedQuestion,
-                options: noOfQuestions,
+                options: List.generate(46, (index) => (index + 1).toString()),
                 label: "No. of questions",
                 onChanged: (String? newValue) {
                   int questionCount = int.parse(newValue!);
@@ -198,49 +210,80 @@ class _TeacherCreateQuizPageState extends State<TeacherCreateQuizPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          CustomDropdown(
+                            label: "Question Type",
+                            options: ["Multiple Choice", "True/False"],
+                            value: controllers["isTrueFalse"]!.text.isEmpty
+                                ? null
+                                : (controllers["isTrueFalse"]!.text == "true"
+                                    ? "True/False"
+                                    : "Multiple Choice"),
+                            onChanged: (String? value) {
+                              setState(() {
+                                controllers["isTrueFalse"]!.text =
+                                    value == "True/False" ? "true" : "false";
+                              });
+                            },
+                          ),
+                          SizedBox(height: 10),
                           CustomField(
                             label: 'Question ${index + 1}',
                             controller: controllers["question"]!,
                           ),
                           SizedBox(height: 10),
-                          CustomText(
-                            text: "Options",
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: MyColor.blueColor,
-                          ),
-                          SizedBox(height: height * 0.02),
-                          CustomField(
-                            label: 'A',
-                            controller: controllers["optionA"]!,
-                          ),
-                          SizedBox(height: height * 0.02),
-                          CustomField(
-                            label: 'B',
-                            controller: controllers["optionB"]!,
-                          ),
-                          SizedBox(height: height * 0.02),
-                          CustomField(
-                            label: 'C',
-                            controller: controllers["optionC"]!,
-                          ),
-                          SizedBox(height: height * 0.02),
-                          CustomField(
-                            label: 'D',
-                            controller: controllers["optionD"]!,
-                          ),
-                          SizedBox(height: height * 0.03),
+                          if (controllers["isTrueFalse"]!.text == "true") ...[
+                            CustomField(
+                              label: 'True',
+                              controller: controllers["optionA"]!,
+                            ),
+                            SizedBox(
+                              height: height * 0.015,
+                            ),
+                            CustomField(
+                              label: 'False',
+                              controller: controllers["optionB"]!,
+                            ),
+                          ] else ...[
+                            CustomField(
+                              label: 'A',
+                              controller: controllers["optionA"]!,
+                            ),
+                            SizedBox(
+                              height: height * 0.015,
+                            ),
+                            CustomField(
+                              label: 'B',
+                              controller: controllers["optionB"]!,
+                            ),
+                            SizedBox(
+                              height: height * 0.015,
+                            ),
+                            CustomField(
+                              label: 'C',
+                              controller: controllers["optionC"]!,
+                            ),
+                            SizedBox(
+                              height: height * 0.015,
+                            ),
+                            CustomField(
+                              label: 'D',
+                              controller: controllers["optionD"]!,
+                            ),
+                          ],
+                          SizedBox(height: 10),
                           CustomDropdown(
                             label: "Correct Answer",
-                            options: ["A", "B", "C", "D"],
+                            options: controllers["isTrueFalse"]!.text == "true"
+                                ? ["A", "B"]
+                                : ["A", "B", "C", "D"],
+                            value: controllers["answer"]!.text.isEmpty
+                                ? null
+                                : controllers["answer"]!.text,
                             onChanged: (String? newValue) {
                               setState(() {
                                 controllers["answer"]!.text = newValue!;
                               });
                             },
-                            value: controllers["answer"]!.text.isEmpty
-                                ? null
-                                : controllers["answer"]!.text,
                           ),
                         ],
                       ),

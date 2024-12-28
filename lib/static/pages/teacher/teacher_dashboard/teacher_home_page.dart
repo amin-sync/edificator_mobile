@@ -91,7 +91,7 @@ class _TeacherHomePageState extends State<TeacherHomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomText(
-                              text: "Edificator",
+                              text: "Edificator Hub",
                               fontSize: 18,
                               color: MyColor.whiteColor,
                               fontWeight: FontWeight.w500,

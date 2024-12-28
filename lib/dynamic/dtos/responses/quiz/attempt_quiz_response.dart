@@ -13,9 +13,9 @@ class AttemptQuizResponse {
   int answer1Id;
   String answer2;
   int answer2Id;
-  String answer3;
+  String? answer3;
   int answer3Id;
-  String answer4;
+  String? answer4;
   int answer4Id;
   String duration;
 

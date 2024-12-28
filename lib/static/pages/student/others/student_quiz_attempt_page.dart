@@ -131,37 +131,35 @@ class _StudentQuizAttemptPageState extends State<StudentQuizAttemptPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   elevation: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: quiz.question,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: MyColor.blueColor,
-                        ),
-                        SizedBox(height: height * 0.02),
-                        ...[
-                          {"id": quiz.answer1Id, "text": quiz.answer1},
-                          {"id": quiz.answer2Id, "text": quiz.answer2},
-                          {"id": quiz.answer3Id, "text": quiz.answer3},
-                          {"id": quiz.answer4Id, "text": quiz.answer4},
-                        ].map((answer) {
-                          return RadioListTile<int>(
-                            title: Text(answer["text"]!.toString()),
-                            value: int.parse(answer["id"].toString()),
-                            groupValue: selectedAnswers[quiz.questionId],
-                            onChanged: (value) {
-                              selectAnswer(quiz.questionId, value!);
-                            },
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
+                  child: Padding(padding: const EdgeInsets.all(15),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                CustomText(
+                text: quiz.question,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: MyColor.blueColor,
+                ),
+                SizedBox(height: height * 0.02),
+                ...[
+                {"id": quiz.answer1Id, "text": quiz.answer1},
+                {"id": quiz.answer2Id, "text": quiz.answer2},
+                if (quiz.answer3 != null) {"id": quiz.answer3Id, "text": quiz.answer3},
+                if (quiz.answer4 != null) {"id": quiz.answer4Id, "text": quiz.answer4},
+                ].map((answer) {
+                return RadioListTile<int>(
+                title: Text(answer["text"]!.toString()),
+                value: int.parse(answer["id"].toString()),
+                groupValue: selectedAnswers[quiz.questionId],
+                onChanged: (value) {
+                selectAnswer(quiz.questionId, value!);
+                },
                 );
+                }).toList(),
+                ],
+                ),
+                ));
               },
             ),
       bottomNavigationBar: BottomAppBar(
