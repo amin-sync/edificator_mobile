@@ -2,6 +2,7 @@
 
 import 'package:edificators_hub_mobile/commons/api_constants.dart';
 import 'package:edificators_hub_mobile/dynamic/dtos/requests/auth/login_request.dart';
+import 'package:edificators_hub_mobile/static/pages/auth/chatbot_page.dart';
 import 'package:edificators_hub_mobile/static/pages/auth/student_register_page.dart';
 import 'package:edificators_hub_mobile/static/pages/auth/teacher_register_page.dart';
 import 'package:edificators_hub_mobile/static/pages/student/student_dashboard/student_dashboard_page.dart';
@@ -62,6 +63,20 @@ class _LoginPageState extends State<LoginPage> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
+      floatingActionButton: Tooltip(
+        message: "How can I help you?", // Hover message
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChatBotPage()),
+            );
+          },
+          backgroundColor: MyColor.blueColor,
+          icon: const Icon(Icons.mark_chat_unread, color: Colors.white),
+          label: const Text("Chatbot"),
+        ),
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(

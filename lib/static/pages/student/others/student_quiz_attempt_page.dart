@@ -14,6 +14,7 @@ import '../../../widgets/texts/custom_text.dart';
 class StudentQuizAttemptPage extends StatefulWidget {
   final int quizId;
   final int courseId;
+
   const StudentQuizAttemptPage(
       {super.key, required this.quizId, required this.courseId});
 
@@ -126,40 +127,43 @@ class _StudentQuizAttemptPageState extends State<StudentQuizAttemptPage> {
               itemBuilder: (context, index) {
                 final quiz = quizzes[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 5,
-                  child: Padding(padding: const EdgeInsets.all(15),
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                CustomText(
-                text: quiz.question,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: MyColor.blueColor,
-                ),
-                SizedBox(height: height * 0.02),
-                ...[
-                {"id": quiz.answer1Id, "text": quiz.answer1},
-                {"id": quiz.answer2Id, "text": quiz.answer2},
-                if (quiz.answer3 != null) {"id": quiz.answer3Id, "text": quiz.answer3},
-                if (quiz.answer4 != null) {"id": quiz.answer4Id, "text": quiz.answer4},
-                ].map((answer) {
-                return RadioListTile<int>(
-                title: Text(answer["text"]!.toString()),
-                value: int.parse(answer["id"].toString()),
-                groupValue: selectedAnswers[quiz.questionId],
-                onChanged: (value) {
-                selectAnswer(quiz.questionId, value!);
-                },
-                );
-                }).toList(),
-                ],
-                ),
-                ));
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: quiz.question,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: MyColor.blueColor,
+                          ),
+                          SizedBox(height: height * 0.02),
+                          ...[
+                            {"id": quiz.answer1Id, "text": quiz.answer1},
+                            {"id": quiz.answer2Id, "text": quiz.answer2},
+                            if (quiz.answer3 != null)
+                              {"id": quiz.answer3Id, "text": quiz.answer3},
+                            if (quiz.answer4 != null)
+                              {"id": quiz.answer4Id, "text": quiz.answer4},
+                          ].map((answer) {
+                            return RadioListTile<int>(
+                              title: Text(answer["text"]!.toString()),
+                              value: int.parse(answer["id"].toString()),
+                              groupValue: selectedAnswers[quiz.questionId],
+                              onChanged: (value) {
+                                selectAnswer(quiz.questionId, value!);
+                              },
+                            );
+                          }).toList(),
+                        ],
+                      ),
+                    ));
               },
             ),
       bottomNavigationBar: BottomAppBar(

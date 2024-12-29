@@ -17,7 +17,6 @@ dependencies:
   file_picker:
   fluttertoast:
   bottom_navy_bar: ^6.0.0
-  # flutter_datetime_picker: ^2.0.1
   intl:
   provider: ^6.1.2
   font_awesome_flutter: ^10.1.0
@@ -32,6 +31,7 @@ dependencies:
   cached_network_image:
   firebase_core:
   cloud_firestore:
+  webview_flutter:
   # -- dependencies --
 
 dev_dependencies:
