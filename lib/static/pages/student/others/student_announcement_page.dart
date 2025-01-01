@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../commons/colors.dart';
 import '../../../../commons/generic_list.dart';
+import '../../../../commons/utility.dart';
 import '../../../../dynamic/dtos/responses/announcement_response.dart';
 import '../../../../dynamic/providers/announcement_provider.dart';
 import '../../../widgets/texts/custom_text.dart';
@@ -96,10 +97,10 @@ class _StudentAnnouncementPageState extends State<StudentAnnouncementPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomText(
-                    text: announcement.message,
-                    fontSize: 16,
-                    color: MyColor.whiteColor,
+                  RichText(
+                    text: TextSpan(
+                      children: Utility.getTextWithLinks(announcement.message),
+                    ),
                   ),
                   SizedBox(height: height * 0.010),
                   Text(
